@@ -1,23 +1,48 @@
 #!/bin/bash
 
-REPO_NAME=$1
-BASE_PATH="/home/ruiliu/Development"
-PROJ_NAME="crustydb"
+# get parameters
+REPO_DIR=$1
+TEAM_CODE=$2
+
+echo "Start to run e2e-benchmark for" $REPO_DIR
+
+echo "End-to-End Performance Benchmark for TEAM" $TEAM_CODE > ${BASE_PATH}/${RESULTS_PATH}/$RESULT_FILE
+
+# read path information and baseline from the configuration file
+BASE_PATH=`sed '/^BASE_PATH=/!d;s/.*=//' config.ini`
+PROJECTS_PATH=`sed '/^PROJECTS_PATH=/!d;s/.*=//' config.ini`
+REPOS_FILE=`sed '/^REPOS_FILE=/!d;s/.*=//' config.ini`
+
+JOIN_TINY_BASELINE=`sed '/^JOIN_TINY_BASELINE=/!d;s/.*=//' config.ini`
+JOIN_SMALL_BASELINE=`sed '/^JOIN_SMALL_BASELINE=/!d;s/.*=//' config.ini`
+JOIN_LARGE_BASELINE=`sed '/^JOIN_LARGE_BASELINE=/!d;s/.*=//' config.ini`
+JOIN_LEFT_BASELINE=`sed '/^JOIN_LEFT_BASELINE=/!d;s/.*=//' config.ini`
+JOIN_RIGHT_BASELINE=`sed '/^JOIN_RIGHT_BASELINE=/!d;s/.*=//' config.ini`
+
+# cmd that triggers the e2e-benchmark 
 E2E_PERF_CMD="cargo bench -p e2e-benchmarks"
-OUTPUT_FILE="e2e-results.txt"
 
-JOIN_TINY_BASELINE=200
-JOIN_SMALL_BASELINE=200
-JOIN_LARGE_BASELINE=200
-JOIN_LEFT_BASELINE=200
-JOIN_RIGHT_BASELINE=200
+# project name under each repo
+RUSTDB_NAME="crustydb"
 
-echo "Launching end-to-end benchmark" $REPO_NAME
+# e2e banchmark output for each repo
+OUTPUT_FILE=$REPO_DIR"-e2e-output.txt"
 
-#cd $BASE_PATH$REPO_NAME/$PROJ_NAME
-cd $BASE_PATH/$PROJ_NAME
+# presentation result of e2e benchmark output for each repo  
+RESULT_FILE=$REPO_DIR"-e2e-result.txt"
 
-#$E2E_PERF_CMD > $OUTPUT_FILE
+cd ${BASE_PATH}/${PROJECTS_PATH}/$REPO_DIR/${RUSTDB_NAME}
+
+# launch e2e benchmark
+$E2E_PERF_CMD > ${BASE_PATH}/${RESULTS_PATH}/$OUTPUT_FILE
+RET=$?
+if [ ${RET} -eq 0 ]
+then
+    echo "Finsih e2e benchmark."
+else
+    echo "Fail to launch e2e benchmark" > ${BASE_PATH}/${RESULTS_PATH}/$RESULT_FILE
+    exit 0
+fi
 
 while read line
 do  
@@ -30,10 +55,10 @@ do
         if [ `echo "$join_tiny_median < $JOIN_TINY_BASELINE"|bc` -eq 1 ]
         then
             join_tiny_progress=$(echo "$join_tiny_median $JOIN_TINY_BASELINE" | awk '{printf("%0.2f\n",($2-$1)/$2*100)}')
-            echo "[JOIN TINY TEST] Your crustydb is faster than the baseline" $join_tiny_progress"%".
+            echo "[JOIN TINY TEST] Your crustydb is faster than the baseline" $join_tiny_progress"%". > ${BASE_PATH}/${RESULTS_PATH}/$RESULT_FILE
         else
             join_tiny_progress=$(echo "$join_tiny_median $JOIN_TINY_BASELINE" | awk '{printf("%0.2f\n",($1-$2)/$2*100)}')
-            echo "[JOIN TINY TEST] Your crustydb is slower than the baseline" $join_tiny_progress"%".
+            echo "[JOIN TINY TEST] Your crustydb is slower than the baseline" $join_tiny_progress"%". > ${BASE_PATH}/${RESULTS_PATH}/$RESULT_FILE
         fi
     fi
 
@@ -46,10 +71,10 @@ do
         if [ `echo "$join_small_median < $JOIN_SMALL_BASELINE"|bc` -eq 1 ]
         then
             join_small_progress=$(echo "$join_small_median $JOIN_SMALL_BASELINE" | awk '{printf("%0.2f\n",($2-$1)/$2*100)}')
-            echo "[JOIN SMALL TEST] Your crustydb is faster than the baseline" $join_small_progress"%".
+            echo "[JOIN SMALL TEST] Your crustydb is faster than the baseline" $join_small_progress"%". > ${BASE_PATH}/${RESULTS_PATH}/$RESULT_FILE
         else
             join_small_progress=$(echo "$join_small_median $JOIN_SMALL_BASELINE" | awk '{printf("%0.2f\n",($1-$2)/$2*100)}')
-            echo "[JOIN SMALL TEST] Your crustydb is slower than the baseline" $join_small_progress"%".
+            echo "[JOIN SMALL TEST] Your crustydb is slower than the baseline" $join_small_progress"%". > ${BASE_PATH}/${RESULTS_PATH}/$RESULT_FILE
         fi
     fi
 
@@ -101,4 +126,4 @@ do
         fi
     fi
 
-done < $OUTPUT_FILE
+done < ${BASE_PATH}/${RESULTS_PATH}/$OUTPUT_FILE
