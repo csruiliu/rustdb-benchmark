@@ -73,7 +73,7 @@ do
     cd ${BASE_PATH}/${PROJECTS_PATH}/${CUR_REPO}
     
     COMMIT_SHA=`git rev-parse HEAD | cut -c 1-7`
-    echo "Commit: ${COMMIT_SHA}" >> ${RESULT_PATH}
+    echo "COMMIT: ${COMMIT_SHA}" >> ${RESULT_PATH}
 
     cd ./${RUSTDB_NAME}
 
@@ -84,7 +84,12 @@ do
     then
         echo "Finsih e2e benchmark."
     else
-        echo "Fail to launch e2e benchmark" >> ${RESULT_PATH}
+        echo "Fail to launch e2e benchmark"
+        echo "[JOIN TINY TEST] Failed" >> ${RESULT_PATH}
+        echo "[JOIN SMALL TEST] Failed" >> ${RESULT_PATH}
+        echo "[JOIN LARGE TEST] Failed" >> ${RESULT_PATH}
+        echo "[JOIN LEFT TEST] Failed" >> ${RESULT_PATH}
+        echo "[JOIN RIGHT TEST] Failed" >> ${RESULT_PATH}
         continue
     fi
 
