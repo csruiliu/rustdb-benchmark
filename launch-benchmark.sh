@@ -70,7 +70,12 @@ do
     # input team code for current repo
     echo "### End-to-End Performance Benchmark for TEAM ${CUR_TEAMCODE} ###" >> ${RESULT_PATH}
 
-    cd ${BASE_PATH}/${PROJECTS_PATH}/${CUR_REPO}/${RUSTDB_NAME}
+    cd ${BASE_PATH}/${PROJECTS_PATH}/${CUR_REPO}
+    
+    COMMIT_SHA=`git rev-parse HEAD | cut -c 1-7`
+    echo "Commit: ${COMMIT_SHA}" >> ${RESULT_PATH}
+
+    cd ./${RUSTDB_NAME}
 
     # launch e2e benchmark
     $E2E_PERF_CMD > ${BASE_PATH}/${RESULTS_PATH}/$REPO_OUTPUT_FILE
