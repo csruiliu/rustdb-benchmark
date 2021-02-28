@@ -22,7 +22,20 @@ RUSTDB_NAME="crustydb"
 # presentation result of e2e benchmark output for current repo  
 RESULT_FILE="e2e-result.txt"
 
+RESULT_PATH=${BASE_PATH}/${RESULTS_PATH}/$RESULT_FILE
+
+if [ -f ${RESULT_PATH} ]
+then
+    echo "result folder exists, clean it"
+    rm ${RESULT_PATH}
+fi
+
 # create folder for all repos' results
+if [ -d "${BASE_PATH}/${RESULTS_PATH}" ]
+then
+    rm -rf "${BASE_PATH}/${RESULTS_PATH}"
+fi
+
 mkdir "${BASE_PATH}/${RESULTS_PATH}"
 RET=$?
 if [ ${RET} -eq 0 ]
@@ -55,7 +68,7 @@ do
     echo "Start to run e2e-benchmark for" ${CUR_REPO}
 
     # input team code for current repo
-    echo "### End-to-End Performance Benchmark for TEAM ${CUR_TEAMCODE} ###" >> ${BASE_PATH}/${RESULTS_PATH}/$RESULT_FILE
+    echo "### End-to-End Performance Benchmark for TEAM ${CUR_TEAMCODE} ###" >> ${RESULT_PATH}
 
     cd ${BASE_PATH}/${PROJECTS_PATH}/${CUR_REPO}/${RUSTDB_NAME}
 
@@ -66,7 +79,7 @@ do
     then
         echo "Finsih e2e benchmark."
     else
-        echo "Fail to launch e2e benchmark" >> ${BASE_PATH}/${RESULTS_PATH}/$RESULT_FILE
+        echo "Fail to launch e2e benchmark" >> ${RESULT_PATH}
         continue
     fi
 
@@ -82,10 +95,10 @@ do
             if [ `echo "$join_tiny_median < $JOIN_TINY_BASELINE"|bc` -eq 1 ]
             then
                 join_tiny_progress=$(echo "$join_tiny_median $JOIN_TINY_BASELINE" | awk '{printf("%0.2f\n",($2-$1)/$2*100)}')
-                echo "[JOIN TINY TEST] Your crustydb is faster than the baseline" $join_tiny_progress"%". >> ${BASE_PATH}/${RESULTS_PATH}/$RESULT_FILE
+                echo "[JOIN TINY TEST] Your crustydb is faster than the baseline" $join_tiny_progress"%". >> ${RESULT_PATH}
             else
                 join_tiny_progress=$(echo "$join_tiny_median $JOIN_TINY_BASELINE" | awk '{printf("%0.2f\n",($1-$2)/$2*100)}')
-                echo "[JOIN TINY TEST] Your crustydb is slower than the baseline" $join_tiny_progress"%". >> ${BASE_PATH}/${RESULTS_PATH}/$RESULT_FILE
+                echo "[JOIN TINY TEST] Your crustydb is slower than the baseline" $join_tiny_progress"%". >> ${RESULT_PATH}
             fi
         fi
 
@@ -98,10 +111,10 @@ do
             if [ `echo "$join_small_median < $JOIN_SMALL_BASELINE"|bc` -eq 1 ]
             then
                 join_small_progress=$(echo "$join_small_median $JOIN_SMALL_BASELINE" | awk '{printf("%0.2f\n",($2-$1)/$2*100)}')
-                echo "[JOIN SMALL TEST] Your crustydb is faster than the baseline" $join_small_progress"%". >> ${BASE_PATH}/${RESULTS_PATH}/$RESULT_FILE
+                echo "[JOIN SMALL TEST] Your crustydb is faster than the baseline" $join_small_progress"%". >> ${RESULT_PATH}
             else
                 join_small_progress=$(echo "$join_small_median $JOIN_SMALL_BASELINE" | awk '{printf("%0.2f\n",($1-$2)/$2*100)}')
-                echo "[JOIN SMALL TEST] Your crustydb is slower than the baseline" $join_small_progress"%". >> ${BASE_PATH}/${RESULTS_PATH}/$RESULT_FILE
+                echo "[JOIN SMALL TEST] Your crustydb is slower than the baseline" $join_small_progress"%". >> ${RESULT_PATH}
             fi
         fi
 
@@ -114,10 +127,10 @@ do
             if [ `echo "$join_large_median < $JOIN_LARGE_BASELINE"|bc` -eq 1 ]
             then
                 join_large_progress=$(echo "$join_large_median $JOIN_LARGE_BASELINE" | awk '{printf("%0.2f\n",($2-$1)/$2*100)}')
-                echo "[JOIN LARGE TEST] Your crustydb is faster than the baseline" $join_large_progress"%". >> ${BASE_PATH}/${RESULTS_PATH}/$RESULT_FILE
+                echo "[JOIN LARGE TEST] Your crustydb is faster than the baseline" $join_large_progress"%". >> ${RESULT_PATH}
             else
                 join_large_progress=$(echo "$join_large_median $JOIN_LARGE_BASELINE" | awk '{printf("%0.2f\n",($1-$2)/$2*100)}')
-                echo "[JOIN LARGE TEST] Your crustydb is slower than the baseline" $join_large_progress"%". >> ${BASE_PATH}/${RESULTS_PATH}/$RESULT_FILE
+                echo "[JOIN LARGE TEST] Your crustydb is slower than the baseline" $join_large_progress"%". >> ${RESULT_PATH}
             fi
         fi
 
@@ -130,10 +143,10 @@ do
             if [ `echo "$join_left_median < $JOIN_LEFT_BASELINE"|bc` -eq 1 ]
             then
                 join_left_progress=$(echo "$join_left_median $JOIN_LEFT_BASELINE" | awk '{printf("%0.2f\n",($2-$1)/$2*100)}')
-                echo "[JOIN LEFT TEST] Your crustydb is faster than the baseline" $join_left_progress"%". >> ${BASE_PATH}/${RESULTS_PATH}/$RESULT_FILE
+                echo "[JOIN LEFT TEST] Your crustydb is faster than the baseline" $join_left_progress"%". >> ${RESULT_PATH}
             else
                 join_left_progress=$(echo "$join_left_median $JOIN_LEFT_BASELINE" | awk '{printf("%0.2f\n",($1-$2)/$2*100)}')
-                echo "[JOIN LEFT TEST] Your crustydb is slower than the baseline" $join_left_progress"%". >> ${BASE_PATH}/${RESULTS_PATH}/$RESULT_FILE
+                echo "[JOIN LEFT TEST] Your crustydb is slower than the baseline" $join_left_progress"%". >> ${RESULT_PATH}
             fi
         fi
 
@@ -146,14 +159,13 @@ do
             if [ `echo "$join_right_median < $JOIN_RIGHT_BASELINE"|bc` -eq 1 ]
             then
                 join_right_progress=$(echo "$join_right_median $JOIN_RIGHT_BASELINE" | awk '{printf("%0.2f\n",($2-$1)/$2*100)}')
-                echo "[JOIN RIGHT TEST] Your crustydb is faster than the baseline" $join_right_progress"%". >> ${BASE_PATH}/${RESULTS_PATH}/$RESULT_FILE
+                echo "[JOIN RIGHT TEST] Your crustydb is faster than the baseline" $join_right_progress"%". >> ${RESULT_PATH}
             else
                 join_right_progress=$(echo "$join_right_median $JOIN_RIGHT_BASELINE" | awk '{printf("%0.2f\n",($1-$2)/$2*100)}')
-                echo "[JOIN RIGHT TEST] Your crustydb is slower than the baseline" $join_right_progress"%". >> ${BASE_PATH}/${RESULTS_PATH}/$RESULT_FILE
+                echo "[JOIN RIGHT TEST] Your crustydb is slower than the baseline" $join_right_progress"%". >> ${RESULT_PATH}
             fi
         fi
 
     done < ${BASE_PATH}/${RESULTS_PATH}/$REPO_OUTPUT_FILE
-
 
 done < ${BASE_PATH}/${REPOS_FILE}
