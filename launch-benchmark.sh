@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # read path information and baseline from the configuration file
-BASE_PATH=`sed '/^BASE_PATH=/!d;s/.*=//' config.ini`
+BASE_PATH=$HOME
 GIT_PATH=`sed '/^GIT_PATH=/!d;s/.*=//' config.ini`
 PROJECTS_PATH=`sed '/^PROJECTS_PATH=/!d;s/.*=//' config.ini`
 REPOS_FILE=`sed '/^REPOS_FILE=/!d;s/.*=//' config.ini`
