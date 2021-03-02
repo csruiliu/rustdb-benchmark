@@ -1,4 +1,5 @@
 from yattag import Doc
+from datetime import datetime
 
 
 def gen_html_report(in_file, out_file):
@@ -33,11 +34,13 @@ def gen_html_report(in_file, out_file):
                 print("no match line")
 
             line = fp.readline()
-    
+
     doc, tag, text = Doc().tagtext()
+    e = datetime.now()
 
     with tag('html'):
         with tag('body'):
+            
             with tag('p', id='baseline1'):
                 text('#################################################')
             with tag('p', id='baseline2'):
@@ -71,6 +74,10 @@ def gen_html_report(in_file, out_file):
                     text(left_dict[key])
                 with tag('h3', id='right'):
                     text(right_dict[key])
+            with tag('p', id='finish'):
+                text('=======================================================================')
+            with tag('p', id='update-time'):
+                text('Last Update: '+str(e.strftime("%Y-%m-%d %H:%M:%S")))
     result = doc.getvalue()
     with open(out_file, "w") as out:
         out.write(result)
