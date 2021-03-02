@@ -10,7 +10,7 @@ def gen_html_report(in_file, out_file):
     large_dict = dict()
     left_dict = dict()
     right_dict = dict()
-    
+
     with open(in_file, 'r') as fp:
         line = fp.readline()
         idx = 0
@@ -60,19 +60,19 @@ def gen_html_report(in_file, out_file):
             with tag('p', id='baseline-finish'):
                 text('=======================================================================')
             for key in title_dict:
-                with tag('h1', id='team'):
+                with tag('h2', id='team'):
                     text(title_dict[key])
-                with tag('h3', id='commit'):
+                with tag('h4', id='commit'):
                     text(commit_dict[key])
-                with tag('h3', id='tiny'):
+                with tag('h4', id='tiny'):
                     text(tiny_dict[key])
-                with tag('h3', id='small'):
+                with tag('h4', id='small'):
                     text(small_dict[key])
-                with tag('h3', id='large'):
+                with tag('h4', id='large'):
                     text(large_dict[key])
-                with tag('h3', id='left'):
+                with tag('h4', id='left'):
                     text(left_dict[key])
-                with tag('h3', id='right'):
+                with tag('h4', id='right'):
                     text(right_dict[key])
             with tag('p', id='finish'):
                 text('=======================================================================')
