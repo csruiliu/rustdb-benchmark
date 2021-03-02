@@ -7,11 +7,11 @@ PROJECTS_PATH=`sed '/^PROJECTS_PATH=/!d;s/.*=//' config.ini`
 REPOS_FILE=`sed '/^REPOS_FILE=/!d;s/.*=//' config.ini`
 RESULTS_PATH=`sed '/^RESULTS_PATH=/!d;s/.*=//' config.ini`
 
-JOIN_TINY_BASELINE=`sed '/^JOIN_TINY_BASELINE=/!d;s/.*=//' config.ini`
-JOIN_SMALL_BASELINE=`sed '/^JOIN_SMALL_BASELINE=/!d;s/.*=//' config.ini`
-JOIN_LARGE_BASELINE=`sed '/^JOIN_LARGE_BASELINE=/!d;s/.*=//' config.ini`
-JOIN_LEFT_BASELINE=`sed '/^JOIN_LEFT_BASELINE=/!d;s/.*=//' config.ini`
-JOIN_RIGHT_BASELINE=`sed '/^JOIN_RIGHT_BASELINE=/!d;s/.*=//' config.ini`
+# JOIN_TINY_BASELINE=`sed '/^JOIN_TINY_BASELINE=/!d;s/.*=//' config.ini`
+# JOIN_SMALL_BASELINE=`sed '/^JOIN_SMALL_BASELINE=/!d;s/.*=//' config.ini`
+# JOIN_LARGE_BASELINE=`sed '/^JOIN_LARGE_BASELINE=/!d;s/.*=//' config.ini`
+# JOIN_LEFT_BASELINE=`sed '/^JOIN_LEFT_BASELINE=/!d;s/.*=//' config.ini`
+# JOIN_RIGHT_BASELINE=`sed '/^JOIN_RIGHT_BASELINE=/!d;s/.*=//' config.ini`
 
 # cmd that triggers the e2e-benchmark 
 E2E_PERF_CMD="cargo bench -p e2e-benchmarks"
@@ -26,7 +26,7 @@ RESULT_PATH=${BASE_PATH}/${RESULTS_PATH}/$RESULT_FILE
 
 if [ -f ${RESULT_PATH} ]
 then
-    echo "result folder exists, clean it"
+    echo "result file exists, clean it"
     rm ${RESULT_PATH}
 fi
 
@@ -98,10 +98,15 @@ do
     do  
         if [[ $line == join_tiny* ]]; then
             echo $line
-            res_array=(${line//[a-zA-Z:_[\]]/})        
-            join_tiny_median=${res_array[1]}
-            echo "TINY TEST: "$join_tiny_median
-            
+            strip_line=${line#*:}
+            res_array=(${strip_line//[[\]]/})        
+            join_tiny_median=${res_array[2]}
+            join_tiny_unit=${res_array[3]}
+
+            echo "TINY TEST: "${join_tiny_median}
+            echo "[JOIN TINY TEST] Your crustydb runs" ${join_tiny_median} ${join_tiny_unit}. >> ${RESULT_PATH}
+
+            : '
             if [ `echo "$join_tiny_median < $JOIN_TINY_BASELINE"|bc` -eq 1 ]
             then
                 join_tiny_progress=$(echo "$join_tiny_median $JOIN_TINY_BASELINE" | awk '{printf("%0.2f\n",($2-$1)/$2*100)}')
@@ -110,14 +115,19 @@ do
                 join_tiny_progress=$(echo "$join_tiny_median $JOIN_TINY_BASELINE" | awk '{printf("%0.2f\n",($1-$2)/$2*100)}')
                 echo "[JOIN TINY TEST] Your crustydb is slower than the baseline" $join_tiny_progress"%". >> ${RESULT_PATH}
             fi
+            '
         fi
 
         if [[ $line == join_small* ]]; then
             echo $line
-            res_array=(${line//[a-zA-Z:_[\]]/})    
-            join_small_median=${res_array[1]}
+            strip_line=${line#*:}
+            res_array=(${strip_line//[[\]]/})    
+            join_small_median=${res_array[2]}
+            join_small_unit=${res_array[3]}
             echo "SMALL TEST: "$join_small_median
-
+            echo "[JOIN SMALL TEST] Your crustydb runs" ${join_small_median} ${join_small_unit}. >> ${RESULT_PATH}
+            
+            : '
             if [ `echo "$join_small_median < $JOIN_SMALL_BASELINE"|bc` -eq 1 ]
             then
                 join_small_progress=$(echo "$join_small_median $JOIN_SMALL_BASELINE" | awk '{printf("%0.2f\n",($2-$1)/$2*100)}')
@@ -126,14 +136,19 @@ do
                 join_small_progress=$(echo "$join_small_median $JOIN_SMALL_BASELINE" | awk '{printf("%0.2f\n",($1-$2)/$2*100)}')
                 echo "[JOIN SMALL TEST] Your crustydb is slower than the baseline" $join_small_progress"%". >> ${RESULT_PATH}
             fi
+            '
         fi
 
         if [[ $line == join_large* ]]; then
             echo $line
-            res_array=(${line//[a-zA-Z:_[\]]/})    
-            join_large_median=${res_array[1]}
+            strip_line=${line#*:}
+            res_array=(${strip_line//[[\]]/})    
+            join_large_median=${res_array[2]}
+            join_large_unit=${res_array[3]}
             echo "LARGE TEST: "$join_large_median
+            echo "[JOIN LARGE TEST] Your crustydb runs" ${join_large_median} ${join_large_unit}. >> ${RESULT_PATH}
 
+            : '
             if [ `echo "$join_large_median < $JOIN_LARGE_BASELINE"|bc` -eq 1 ]
             then
                 join_large_progress=$(echo "$join_large_median $JOIN_LARGE_BASELINE" | awk '{printf("%0.2f\n",($2-$1)/$2*100)}')
@@ -142,14 +157,19 @@ do
                 join_large_progress=$(echo "$join_large_median $JOIN_LARGE_BASELINE" | awk '{printf("%0.2f\n",($1-$2)/$2*100)}')
                 echo "[JOIN LARGE TEST] Your crustydb is slower than the baseline" $join_large_progress"%". >> ${RESULT_PATH}
             fi
+            '
         fi
 
         if [[ $line == join_left* ]]; then
             echo $line
-            res_array=(${line//[a-zA-Z:_[\]]/})    
-            join_left_median=${res_array[1]}
+            strip_line=${line#*:}
+            res_array=(${strip_line//[[\]]/})    
+            join_left_median=${res_array[2]}
+            join_left_unit=${res_array[3]}
             echo "LEFT TEST: "$join_left_median
-
+            echo "[JOIN LEFT TEST] Your crustydb runs" ${join_left_median} ${join_left_unit}. >> ${RESULT_PATH}
+            
+            : '
             if [ `echo "$join_left_median < $JOIN_LEFT_BASELINE"|bc` -eq 1 ]
             then
                 join_left_progress=$(echo "$join_left_median $JOIN_LEFT_BASELINE" | awk '{printf("%0.2f\n",($2-$1)/$2*100)}')
@@ -158,14 +178,19 @@ do
                 join_left_progress=$(echo "$join_left_median $JOIN_LEFT_BASELINE" | awk '{printf("%0.2f\n",($1-$2)/$2*100)}')
                 echo "[JOIN LEFT TEST] Your crustydb is slower than the baseline" $join_left_progress"%". >> ${RESULT_PATH}
             fi
+            '
         fi
 
         if [[ $line == join_right* ]]; then
             echo $line
-            res_array=(${line//[a-zA-Z:_[\]]/})    
-            join_right_median=${res_array[1]}
+            strip_line=${line#*:}
+            res_array=(${strip_line//[[\]]/})    
+            join_right_median=${res_array[2]}
+            join_right_unit=${res_array[3]}
             echo "RIGHT TEST: "$join_right_median
+            echo "[JOIN RIGHT TEST] Your crustydb runs" ${join_right_median} ${join_right_unit}. >> ${RESULT_PATH}
 
+            : '
             if [ `echo "$join_right_median < $JOIN_RIGHT_BASELINE"|bc` -eq 1 ]
             then
                 join_right_progress=$(echo "$join_right_median $JOIN_RIGHT_BASELINE" | awk '{printf("%0.2f\n",($2-$1)/$2*100)}')
@@ -174,6 +199,7 @@ do
                 join_right_progress=$(echo "$join_right_median $JOIN_RIGHT_BASELINE" | awk '{printf("%0.2f\n",($1-$2)/$2*100)}')
                 echo "[JOIN RIGHT TEST] Your crustydb is slower than the baseline" $join_right_progress"%". >> ${RESULT_PATH}
             fi
+            '
         fi
 
     done < ${BASE_PATH}/${RESULTS_PATH}/$REPO_OUTPUT_FILE
