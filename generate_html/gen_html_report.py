@@ -9,7 +9,7 @@ def gen_html_report(in_file, out_file):
     large_dict = dict()
     left_dict = dict()
     right_dict = dict()
-
+    
     with open(in_file, 'r') as fp:
         line = fp.readline()
         idx = 0
@@ -33,13 +33,31 @@ def gen_html_report(in_file, out_file):
                 print("no match line")
 
             line = fp.readline()
-
+    
     doc, tag, text = Doc().tagtext()
 
     with tag('html'):
         with tag('body'):
+            with tag('p', id='baseline1'):
+                text('#################################################')
+            with tag('p', id='baseline2'):
+                text('##### End-to-End Performance Benchmark Baseline #####')
+            with tag('p', id='baseline3'):
+                text('#################################################')
+            with tag('p', id='baseline-tiny'):
+                text('[JOIN TINY TEST]: 87.367 us')
+            with tag('p', id='baseline-small'):
+                text('[JOIN SMALL TEST]: 403.72 us')
+            with tag('p', id='baseline-large'):
+                text('[JOIN LARGE TEST]: 584.26 ms')
+            with tag('p', id='baseline-left'):
+                text('[JOIN LEFT TEST]: 408.73 ms')
+            with tag('p', id='baseline-right'):
+                text('[JOIN RIGHT TEST]: 417.85 ms')
+            with tag('p', id='baseline-finish'):
+                text('=======================================================================')
             for key in title_dict:
-                with tag('h1', id='main'):
+                with tag('h1', id='team'):
                     text(title_dict[key])
                 with tag('h3', id='commit'):
                     text(commit_dict[key])
@@ -53,7 +71,6 @@ def gen_html_report(in_file, out_file):
                     text(left_dict[key])
                 with tag('h3', id='right'):
                     text(right_dict[key])
-
     result = doc.getvalue()
     with open(out_file, "w") as out:
         out.write(result)

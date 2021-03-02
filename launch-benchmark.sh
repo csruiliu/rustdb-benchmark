@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# kill the process if the benchmark didn't finish properly
+PID_RET=`ps aux | grep crusty`
+PID_RET_ARRAY=(${PID_RET//[a-zA-Z-+?:_\/]/})
+kill ${PID_RET_ARRAY[0]}
+
 # read path information and baseline from the configuration file
 BASE_PATH=$HOME
 GIT_PATH=`sed '/^GIT_PATH=/!d;s/.*=//' config.ini`
@@ -35,8 +40,8 @@ if [ -d "${BASE_PATH}/${RESULTS_PATH}" ]
 then
     rm -rf "${BASE_PATH}/${RESULTS_PATH}"
 fi
-
 mkdir "${BASE_PATH}/${RESULTS_PATH}"
+
 RET=$?
 if [ ${RET} -eq 0 ]
 then
@@ -93,9 +98,17 @@ do
         continue
     fi
 
+    join_tiny_result="[JOIN TINY TEST] Failed"
+    join_small_result="[JOIN SMALL TEST] Failed"
+    join_large_result="[JOIN LARGE TEST] Failed"
+    join_left_result="[JOIN LEFT TEST] Failed"
+    join_right_result="[JOIN RIGHT TEST] Failed"
+
     # analyze the output to generate result 
     while read line
     do  
+
+        
         if [[ $line == join_tiny* ]]; then
             echo $line
             strip_line=${line#*:}
@@ -104,7 +117,8 @@ do
             join_tiny_unit=${res_array[3]}
 
             echo "TINY TEST: "${join_tiny_median}
-            echo "[JOIN TINY TEST] Your crustydb runs" ${join_tiny_median} ${join_tiny_unit}. >> ${RESULT_PATH}
+            join_tiny_result="[JOIN TINY TEST] Your crustydb runs ${join_tiny_median} ${join_tiny_unit}."
+            # echo "[JOIN TINY TEST] Your crustydb runs" ${join_tiny_median} ${join_tiny_unit}. >> ${RESULT_PATH}
         fi
 
         if [[ $line == join_small* ]]; then
@@ -114,7 +128,8 @@ do
             join_small_median=${res_array[2]}
             join_small_unit=${res_array[3]}
             echo "SMALL TEST: "$join_small_median
-            echo "[JOIN SMALL TEST] Your crustydb runs" ${join_small_median} ${join_small_unit}. >> ${RESULT_PATH}
+            join_small_result="[JOIN SMALL TEST] Your crustydb runs ${join_small_median} ${join_small_unit}."
+            # echo "[JOIN SMALL TEST] Your crustydb runs" ${join_small_median} ${join_small_unit}. >> ${RESULT_PATH}
         fi
 
         if [[ $line == join_large* ]]; then
@@ -124,7 +139,8 @@ do
             join_large_median=${res_array[2]}
             join_large_unit=${res_array[3]}
             echo "LARGE TEST: "$join_large_median
-            echo "[JOIN LARGE TEST] Your crustydb runs" ${join_large_median} ${join_large_unit}. >> ${RESULT_PATH}
+            join_large_result="[JOIN LARGE TEST] Your crustydb runs ${join_large_median} ${join_large_unit}."
+            # echo "[JOIN LARGE TEST] Your crustydb runs" ${join_large_median} ${join_large_unit}. >> ${RESULT_PATH}
         fi
 
         if [[ $line == join_left* ]]; then
@@ -134,7 +150,8 @@ do
             join_left_median=${res_array[2]}
             join_left_unit=${res_array[3]}
             echo "LEFT TEST: "$join_left_median
-            echo "[JOIN LEFT TEST] Your crustydb runs" ${join_left_median} ${join_left_unit}. >> ${RESULT_PATH}
+            join_left_result="[JOIN LEFT TEST] Your crustydb runs ${join_left_median} ${join_left_unit}."
+            # echo "[JOIN LEFT TEST] Your crustydb runs" ${join_left_median} ${join_left_unit}. >> ${RESULT_PATH}
         fi
 
         if [[ $line == join_right* ]]; then
@@ -144,9 +161,15 @@ do
             join_right_median=${res_array[2]}
             join_right_unit=${res_array[3]}
             echo "RIGHT TEST: "$join_right_median
-            echo "[JOIN RIGHT TEST] Your crustydb runs" ${join_right_median} ${join_right_unit}. >> ${RESULT_PATH}
+            join_right_result="[JOIN RIGHT TEST] Your crustydb runs ${join_right_median} ${join_right_unit}."
+            # echo "[JOIN RIGHT TEST] Your crustydb runs" ${join_right_median} ${join_right_unit}. >> ${RESULT_PATH}
         fi
-
     done < ${BASE_PATH}/${RESULTS_PATH}/$REPO_OUTPUT_FILE
+
+    echo ${join_tiny_result} >> ${RESULT_PATH}
+    echo ${join_small_result} >> ${RESULT_PATH}
+    echo ${join_large_result} >> ${RESULT_PATH}
+    echo ${join_left_result} >> ${RESULT_PATH}
+    echo ${join_right_result} >> ${RESULT_PATH}
 
 done < ${BASE_PATH}/${REPOS_FILE}
