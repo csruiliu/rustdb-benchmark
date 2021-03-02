@@ -101,9 +101,7 @@ do
 
     # analyze the output to generate result 
     while read line
-    do  
-
-        
+    do          
         if [[ $line == join_tiny* ]]; then
             echo $line
             strip_line=${line#*:}
@@ -168,8 +166,10 @@ do
     echo ${join_right_result} >> ${RESULT_PATH}
 
     # kill the process if the benchmark didn't finish properly
-    PID_RET=`ps aux | grep crusty`
-    PID_RET_ARRAY=(${PID_RET//[a-zA-Z-+?:_\/]/})
-    kill ${PID_RET_ARRAY[0]}
-
+    PID_RET=`ps -ef | grep crusty | awk -F" " '{print $2}'`
+    PID_RET_ARRAY=(${PID_RET})
+    for proc_id in ${PID_RET_ARRAY[@]}
+    do 
+        kill ${proc_id}
+    done
 done < ${BASE_PATH}/${REPOS_FILE}
