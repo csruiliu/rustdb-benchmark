@@ -1,10 +1,5 @@
 #!/bin/bash
 
-# kill the process if the benchmark didn't finish properly
-PID_RET=`ps aux | grep crusty`
-PID_RET_ARRAY=(${PID_RET//[a-zA-Z-+?:_\/]/})
-kill ${PID_RET_ARRAY[0]}
-
 # read path information and baseline from the configuration file
 BASE_PATH=$HOME
 GIT_PATH=`sed '/^GIT_PATH=/!d;s/.*=//' config.ini`
@@ -171,5 +166,10 @@ do
     echo ${join_large_result} >> ${RESULT_PATH}
     echo ${join_left_result} >> ${RESULT_PATH}
     echo ${join_right_result} >> ${RESULT_PATH}
+
+    # kill the process if the benchmark didn't finish properly
+    PID_RET=`ps aux | grep crusty`
+    PID_RET_ARRAY=(${PID_RET//[a-zA-Z-+?:_\/]/})
+    kill ${PID_RET_ARRAY[0]}
 
 done < ${BASE_PATH}/${REPOS_FILE}
