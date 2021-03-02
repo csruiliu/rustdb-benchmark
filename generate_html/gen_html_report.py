@@ -37,6 +37,9 @@ def gen_html_report(in_file, out_file):
 
     doc, tag, text = Doc().tagtext()
     e = datetime.now()
+    local_now = e.astimezone()
+    local_tz = local_now.tzinfo
+    local_tzname = local_tz.tzname(local_now)
 
     with tag('html'):
         with tag('body'):
@@ -77,7 +80,7 @@ def gen_html_report(in_file, out_file):
             with tag('p', id='finish'):
                 text('=======================================================================')
             with tag('p', id='update-time'):
-                text('Last Update: '+str(e.strftime("%Y-%m-%d %H:%M:%S")))
+                text('Last Update: '+str(e.strftime("%Y-%m-%d %H:%M:%S "))+str(local_tzname))
     result = doc.getvalue()
     with open(out_file, "w") as out:
         out.write(result)
