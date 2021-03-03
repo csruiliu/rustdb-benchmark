@@ -97,7 +97,7 @@ do
             join_tiny_unit=${res_array[3]}
 
             echo "TINY TEST: "${join_tiny_median}
-            join_tiny_result="[JOIN TINY TEST] ${join_tiny_median} ${join_tiny_unit}."
+            join_tiny_result="[JOIN TINY TEST] ${join_tiny_median} ${join_tiny_unit}"
             # echo "[JOIN TINY TEST] Your crustydb runs" ${join_tiny_median} ${join_tiny_unit}. >> ${RESULT_PATH}
         fi
 
@@ -108,7 +108,7 @@ do
             join_small_median=${res_array[2]}
             join_small_unit=${res_array[3]}
             echo "SMALL TEST: "$join_small_median
-            join_small_result="[JOIN SMALL TEST] ${join_small_median} ${join_small_unit}."
+            join_small_result="[JOIN SMALL TEST] ${join_small_median} ${join_small_unit}"
             # echo "[JOIN SMALL TEST] Your crustydb runs" ${join_small_median} ${join_small_unit}. >> ${RESULT_PATH}
         fi
 
