@@ -10,6 +10,7 @@ def gen_html_report(in_file, out_file):
     large_dict = dict()
     left_dict = dict()
     right_dict = dict()
+    heapcheck_dict = dict()
 
     with open(in_file, 'r') as fp:
         line = fp.readline()
@@ -20,6 +21,8 @@ def gen_html_report(in_file, out_file):
                 title_dict[idx] = line.strip()
             elif line.strip().startswith('COMMIT'):
                 commit_dict[idx] = line.strip()
+            elif line.strip().startswith('xxxxx'):
+                heapcheck_dict[idx] = line.strip()
             elif line.strip().startswith('[JOIN TINY TEST]'):
                 tiny_dict[idx] = line.strip()
             elif line.strip().startswith('[JOIN SMALL TEST]'):
@@ -50,6 +53,9 @@ def gen_html_report(in_file, out_file):
                     text(title_dict[key])
                 with tag('h4', id='commit'):
                     text(commit_dict[key])
+                    if key in heapcheck_dict:
+                        with tag('h4', id='commit'):
+                            text(heapcheck_dict[key])
                 with tag('h4', id='tiny'):
                     text(tiny_dict[key] + ' (baseline: 121.89 us)')
                 with tag('h4', id='small'):
