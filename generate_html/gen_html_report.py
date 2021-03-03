@@ -43,24 +43,7 @@ def gen_html_report(in_file, out_file):
 
     with tag('html'):
         with tag('body'):
-            
-            with tag('p', id='baseline1'):
-                text('#################################################')
-            with tag('p', id='baseline2'):
-                text('##### End-to-End Performance Benchmark Baseline #####')
-            with tag('p', id='baseline3'):
-                text('#################################################')
-            with tag('p', id='baseline-tiny'):
-                text('[JOIN TINY TEST]: 87.367 us')
-            with tag('p', id='baseline-small'):
-                text('[JOIN SMALL TEST]: 403.72 us')
-            with tag('p', id='baseline-large'):
-                text('[JOIN LARGE TEST]: 584.26 ms')
-            with tag('p', id='baseline-left'):
-                text('[JOIN LEFT TEST]: 408.73 ms')
-            with tag('p', id='baseline-right'):
-                text('[JOIN RIGHT TEST]: 417.85 ms')
-            with tag('p', id='baseline-finish'):
+            with tag('p', id='header'):
                 text('=======================================================================')
             for key in title_dict:
                 with tag('h2', id='team'):
@@ -68,15 +51,15 @@ def gen_html_report(in_file, out_file):
                 with tag('h4', id='commit'):
                     text(commit_dict[key])
                 with tag('h4', id='tiny'):
-                    text(tiny_dict[key])
+                    text(tiny_dict[key] + ' (baseline: 121.89 us)')
                 with tag('h4', id='small'):
-                    text(small_dict[key])
+                    text(small_dict[key] + ' (baseline: 546.49 us)')
                 with tag('h4', id='large'):
-                    text(large_dict[key])
+                    text(large_dict[key] + ' (baseline: 11.417 s)')
                 with tag('h4', id='left'):
-                    text(left_dict[key])
+                    text(left_dict[key] + ' (baseline: 1.8870 s)')
                 with tag('h4', id='right'):
-                    text(right_dict[key])
+                    text(right_dict[key] + ' (baseline: 508.98 ms)')
             with tag('p', id='finish'):
                 text('=======================================================================')
             with tag('p', id='update-time'):
