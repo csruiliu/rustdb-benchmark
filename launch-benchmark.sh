@@ -85,7 +85,7 @@ do
 
     heap_flag="heapstore::storage_manager::StorageManager"
 
-    if [ `grep -c ${heap_flag} ${server_main}` -ne 0 ] && [ `grep -c ${heap_flag} ${server_csv_util}` -ne 0 ] && [ `grep -c "heapstore" ${server_cargo}` -ne 0 ] && [ `grep -c ${heap_flag} ${queryexe_lib}` -ne 0 ] && [ `grep -q "heapstore" ${queryexe_cargo}` -ne 0 ] 
+    if [ `grep -c ${heap_flag} ${server_main}` -ne 0 ] && [ `grep -c ${heap_flag} ${server_csv_util}` -ne 0 ] && [ `grep -c "heapstore" ${server_cargo}` -ne 0 ] && [ `grep -c ${heap_flag} ${queryexe_lib}` -ne 0 ] && [ `grep -c "heapstore" ${queryexe_cargo}` -ne 0 ] 
     then
         store_flag="pass"
     else
