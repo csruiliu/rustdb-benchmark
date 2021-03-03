@@ -79,19 +79,6 @@ do
 
     # launch e2e benchmark
     $E2E_PERF_CMD > ${BASE_PATH}/${RESULTS_PATH}/$REPO_OUTPUT_FILE
-    RET=$?
-    if [ ${RET} -eq 0 ]
-    then
-        echo "Finsih e2e benchmark."
-    else
-        echo "Fail to launch e2e benchmark"
-        echo "[JOIN TINY TEST] Failed" >> ${RESULT_PATH}
-        echo "[JOIN SMALL TEST] Failed" >> ${RESULT_PATH}
-        echo "[JOIN LARGE TEST] Failed" >> ${RESULT_PATH}
-        echo "[JOIN LEFT TEST] Failed" >> ${RESULT_PATH}
-        echo "[JOIN RIGHT TEST] Failed" >> ${RESULT_PATH}
-        continue
-    fi
 
     join_tiny_result="[JOIN TINY TEST] Failed"
     join_small_result="[JOIN SMALL TEST] Failed"
@@ -110,7 +97,7 @@ do
             join_tiny_unit=${res_array[3]}
 
             echo "TINY TEST: "${join_tiny_median}
-            join_tiny_result="[JOIN TINY TEST] Your crustydb runs ${join_tiny_median} ${join_tiny_unit}."
+            join_tiny_result="[JOIN TINY TEST] ${join_tiny_median} ${join_tiny_unit}."
             # echo "[JOIN TINY TEST] Your crustydb runs" ${join_tiny_median} ${join_tiny_unit}. >> ${RESULT_PATH}
         fi
 
@@ -121,7 +108,7 @@ do
             join_small_median=${res_array[2]}
             join_small_unit=${res_array[3]}
             echo "SMALL TEST: "$join_small_median
-            join_small_result="[JOIN SMALL TEST] Your crustydb runs ${join_small_median} ${join_small_unit}."
+            join_small_result="[JOIN SMALL TEST] ${join_small_median} ${join_small_unit}."
             # echo "[JOIN SMALL TEST] Your crustydb runs" ${join_small_median} ${join_small_unit}. >> ${RESULT_PATH}
         fi
 
@@ -132,7 +119,7 @@ do
             join_large_median=${res_array[2]}
             join_large_unit=${res_array[3]}
             echo "LARGE TEST: "$join_large_median
-            join_large_result="[JOIN LARGE TEST] Your crustydb runs ${join_large_median} ${join_large_unit}."
+            join_large_result="[JOIN LARGE TEST] ${join_large_median} ${join_large_unit}."
             # echo "[JOIN LARGE TEST] Your crustydb runs" ${join_large_median} ${join_large_unit}. >> ${RESULT_PATH}
         fi
 
@@ -143,7 +130,7 @@ do
             join_left_median=${res_array[2]}
             join_left_unit=${res_array[3]}
             echo "LEFT TEST: "$join_left_median
-            join_left_result="[JOIN LEFT TEST] Your crustydb runs ${join_left_median} ${join_left_unit}."
+            join_left_result="[JOIN LEFT TEST] ${join_left_median} ${join_left_unit}."
             # echo "[JOIN LEFT TEST] Your crustydb runs" ${join_left_median} ${join_left_unit}. >> ${RESULT_PATH}
         fi
 
@@ -154,7 +141,7 @@ do
             join_right_median=${res_array[2]}
             join_right_unit=${res_array[3]}
             echo "RIGHT TEST: "$join_right_median
-            join_right_result="[JOIN RIGHT TEST] Your crustydb runs ${join_right_median} ${join_right_unit}."
+            join_right_result="[JOIN RIGHT TEST] ${join_right_median} ${join_right_unit}."
             # echo "[JOIN RIGHT TEST] Your crustydb runs" ${join_right_median} ${join_right_unit}. >> ${RESULT_PATH}
         fi
     done < ${BASE_PATH}/${RESULTS_PATH}/$REPO_OUTPUT_FILE
