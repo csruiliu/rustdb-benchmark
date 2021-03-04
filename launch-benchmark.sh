@@ -24,12 +24,6 @@ RESULT_FILE="e2e-result.txt"
 
 RESULT_PATH=${BASE_PATH}/${RESULTS_PATH}/$RESULT_FILE
 
-if [ -f ${RESULT_PATH} ]
-then
-    echo "result file exists, clean it"
-    rm ${RESULT_PATH}
-fi
-
 # create folder for all repos' results
 if [ -d "${BASE_PATH}/${RESULTS_PATH}" ]
 then
