@@ -6,6 +6,7 @@ GIT_PATH=`sed '/^GIT_PATH=/!d;s/.*=//' config.ini`
 PROJECTS_PATH=`sed '/^PROJECTS_PATH=/!d;s/.*=//' config.ini`
 REPOS_FILE=`sed '/^REPOS_FILE=/!d;s/.*=//' config.ini`
 RESULTS_PATH=`sed '/^RESULTS_PATH=/!d;s/.*=//' config.ini`
+TS_PATH=`sed '/^TIMESTAMP_PATH=/!d;s/.*=//' config.ini`
 
 # JOIN_TINY_BASELINE=`sed '/^JOIN_TINY_BASELINE=/!d;s/.*=//' config.ini`
 # JOIN_SMALL_BASELINE=`sed '/^JOIN_SMALL_BASELINE=/!d;s/.*=//' config.ini`
@@ -39,6 +40,8 @@ else
     echo "Fail to create the folder for all repos results."
     exit 0
 fi
+
+CURRENT_DATE_TIME=`date +%Y%m%d%H%M%S`
 
 # iterate all repos in the repos.txt (REPOS_FILE)
 while read line
@@ -172,3 +175,11 @@ do
         kill ${proc_id}
     done
 done < ${BASE_PATH}/${REPOS_FILE}
+
+# check time stamp path
+if [ ! -d "${BASE_PATH}/${TS_PATH}" ]
+then
+    mkdir "${BASE_PATH}/${TS_PATH}"
+fi
+
+cp ${RESULT_PATH} ${BASE_PATH}/${TS_PATH}/"e2e-results-${CURRENT_DATE_TIME}.txt"
