@@ -43,7 +43,7 @@ fi
 
 CURRENT_DATE_TIME=`date +%Y%m%d%H%M%S`
 
-EXCLUDE_LIST=()
+EXCLUDE_LIST=(exclude_repo_name1 exclude_repo_name2)
 
 # iterate all repos in the repos.txt (REPOS_FILE)
 while read line
@@ -94,14 +94,15 @@ do
 
     cd ./${RUSTDB_NAME}
 
-    if [[ " ${EXCLUDE_LIST[@]} " =~ " ${CUR_REPO} " ]]
-    then 
-        echo "empty" > ${BASE_PATH}/${RESULTS_PATH}/$REPO_OUTPUT_FILE
-    else
-        # launch e2e benchmark
-        $E2E_PERF_CMD > ${BASE_PATH}/${RESULTS_PATH}/$REPO_OUTPUT_FILE
-    fi  
-    
+    # if [[ " ${EXCLUDE_LIST[@]} " =~ " ${CUR_REPO} " ]]
+    # then 
+    #     echo "empty" > ${BASE_PATH}/${RESULTS_PATH}/$REPO_OUTPUT_FILE
+    # else
+    #     $E2E_PERF_CMD > ${BASE_PATH}/${RESULTS_PATH}/$REPO_OUTPUT_FILE
+    # fi  
+
+    timeout 10m $E2E_PERF_CMD > ${BASE_PATH}/${RESULTS_PATH}/$REPO_OUTPUT_FILE
+
     join_tiny_result="[JOIN TINY TEST] Failed"
     join_small_result="[JOIN SMALL TEST] Failed"
     join_large_result="[JOIN LARGE TEST] Failed"
