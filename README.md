@@ -8,4 +8,6 @@
 
 3. All the repos are stored in the folder `rustdb-repos`.
 
-4. Individual result `repo_name-e2e-output.txt` and aggregated result `e2e-result.txt` are stored in folder `results`. 
+4. Individual result `repo_name-e2e-output.txt` and aggregated result `e2e-result.txt` are stored in the folder `results`. 
+
+5. The historic aggregated results are stored in the folder `timestamp`
