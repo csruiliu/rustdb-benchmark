@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# top level script: this gets run first and then we can execute whatever we want
+
+source $HOME/.cargo/env
+
+# the source folder contains the extracted contents of your autograder zip file.
+cd /autograder/source
+
+# the submission folder contains the student's submission, downloaded from Gradescope.
+# cp run.sh /autograder/submission/
+cp runTests.sh /autograder/submission/e2e-tests/runTests.sh
+cd /autograder/submission
+sh run.sh
+
+python3 /autograder/source/parse_rubric.py /autograder/source/rubric.csv mod_test_results /autograder/source/hidden.csv
+
+mv results.json /autograder/results/
+
