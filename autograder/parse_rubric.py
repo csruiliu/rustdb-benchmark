@@ -11,13 +11,36 @@ join_left_baseline_unit = "ms"
 join_large_baseline = 246.02
 join_large_baseline_unit = "ms"
 
-def judge_point(user_result, baseline):
-    if user_result > baseline * 1.05 or user_result == -1:
-        point = 0
-    elif user_result < baseline * 0.95:
-        point = 20
+def judge_point(user_result, result_unit, baseline, baseline_unit):
+    if user_result == -1:
+        return 0
+
+    if result_unit == baseline_unit:
+        if user_result > baseline * 1.05:
+            point = 0
+        elif user_result < baseline * 0.95:
+            point = 20
+        else:
+            point = 16
     else:
-        point = 16
+        if result_unit == "s":
+            user_result_new = user_result * 1000
+        elif result_unit == "us":
+            user_result_new = user_result / 1000
+        else:
+            user_result_new = user_result
+
+        if baseline_unit == "us":
+            baseline_new = baseline / 1000
+        else:
+            baseline_new = baseline
+
+        if user_result_new > baseline_new * 1.05:
+            point = 0
+        elif user_result_new < baseline_new * 0.95:
+            point = 20
+        else:
+            point = 16
 
     return point
 
@@ -93,16 +116,16 @@ def parse(rubric_file, test_output_file):
             test_output['score'] = 0
             
             if test_name == "join_tiny":
-                test_output['score'] = judge_point(join_tiny_result, join_tiny_baseline)
+                test_output['score'] = judge_point(join_tiny_result, join_tiny_time_unit, join_tiny_baseline, join_tiny_baseline_unit)
                 test_output['output'] = generate_output_note(join_tiny_result, join_tiny_time_unit, join_tiny_baseline, join_tiny_baseline_unit)
             elif test_name == "join_left":
-                test_output['score'] = judge_point(join_left_result, join_left_baseline)
+                test_output['score'] = judge_point(join_left_result, join_left_time_unit, join_left_baseline, join_left_baseline_unit)
                 test_output['output'] = generate_output_note(join_left_result, join_left_time_unit, join_left_baseline, join_left_baseline_unit)
             elif test_name == "join_right":
-                test_output['score'] = judge_point(join_right_result, join_right_baseline)
+                test_output['score'] = judge_point(join_right_result, join_right_time_unit, join_right_baseline, join_right_baseline_unit)
                 test_output['output'] = generate_output_note(join_right_result, join_right_time_unit, join_right_baseline, join_right_baseline_unit)
             elif test_name == "join_large":
-                test_output['score'] = judge_point(join_large_result, join_large_baseline)
+                test_output['score'] = judge_point(join_large_result, join_large_time_unit, join_large_baseline, join_large_baseline_unit)
                 test_output['output'] = generate_output_note(join_large_result, join_large_time_unit, join_large_baseline, join_large_baseline_unit)
 
             overall_test.append(test_output)
