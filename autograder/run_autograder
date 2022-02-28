@@ -8,7 +8,8 @@ cd /autograder/source
 
 # the submission folder contains the student's submission, downloaded from Gradescope.
 cp run.sh /autograder/submission/
-#cp runTests.sh /autograder/submission/e2e-tests/runTests.sh
+cp -r test_data /autograder/submission/
+cp -r benches /autograder/submission/e2e-benchmarks/
 
 cd /autograder/submission
 sh run.sh
