@@ -7,12 +7,12 @@ source $HOME/.cargo/env
 cd /autograder/source
 
 # the submission folder contains the student's submission, downloaded from Gradescope.
-# cp run.sh /autograder/submission/
-cp runTests.sh /autograder/submission/e2e-tests/runTests.sh
+cp run.sh /autograder/submission/
+#cp runTests.sh /autograder/submission/e2e-tests/runTests.sh
+
 cd /autograder/submission
 sh run.sh
 
-python3 /autograder/source/parse_rubric.py /autograder/source/rubric.csv mod_test_results /autograder/source/hidden.csv
+python3 /autograder/source/parse_rubric.py /autograder/source/rubric.csv /autograder/submission/e2e-benchmarks/e2e-benchmarks_out
 
 mv results.json /autograder/results/
-
