@@ -3,9 +3,13 @@ import sys
 import json
 
 join_tiny_baseline = 116.14
+join_tiny_baseline_unit = "us"
 join_right_baseline = 168.89
+join_right_baseline_unit = "ms"
 join_left_baseline = 178.45
+join_left_baseline_unit = "ms"
 join_large_baseline = 246.02
+join_large_baseline_unit = "ms"
 
 def judge_point(user_result, baseline):
     if user_result > baseline * 1.05 or user_result == -1:
@@ -17,13 +21,28 @@ def judge_point(user_result, baseline):
 
     return point
 
-def generate_output_note(user_result, baseline):
+def generate_output_note(user_result, result_unit, baseline, baseline_unit):
     if user_result == -1:
         output_note = "Fail to pass the e2e-benchmark test"
     else:
-        output_note = "Your runtime is {}, the baseline is {}".format(user_result, baseline)
+        output_note = "Your runtime is {} {}, the baseline is {} {}".format(user_result, result_unit, baseline, baseline_unit)
     
     return output_note
+
+def value_time_unit(input_line):
+    if "us" in input_line:
+        value = float(input_line.strip().split("[")[1].split(" us ")[1])
+        unit = "us"
+    elif "ms" in input_line: 
+        value = float(input_line.strip().split("[")[1].split(" ms ")[1])
+        unit = "ms"
+    elif "s" in input_line: 
+        value = float(input_line.strip().split("[")[1].split(" s ")[1])
+        unit = "s"
+    else:
+        raise ValueError("Time Unit Error")
+
+    return value, unit
 
 def parse(rubric_file, test_output_file):
     overall_test = list()
@@ -34,22 +53,27 @@ def parse(rubric_file, test_output_file):
         join_right_result = -1
         join_left_result = -1
         join_large_result = -1
+        
+        join_tiny_time_unit = "us"
+        join_right_time_unit = "ms"
+        join_left_time_unit = "ms"
+        join_large_time_unit = "ms"
 
         for x in lines:
             if x.startswith("join_tiny"):
-                value = float(x.strip().split("[")[1].split(" us ")[1])
+                value, join_tiny_time_unit = value_time_unit(x)
                 if isinstance(value, float):
                     join_tiny_result = value
             elif x.startswith("join_right"):
-                value = float(x.strip().split("[")[1].split(" ms ")[1])
+                value, join_right_time_unit = value_time_unit(x)
                 if isinstance(value, float):
                     join_right_result = value
             elif x.startswith("join_left"):
-                value = float(x.strip().split("[")[1].split(" ms ")[1])
+                value, join_left_time_unit = value_time_unit(x)
                 if isinstance(value, float):
                     join_left_result = value
             elif x.startswith("join_large"):
-                value = float(x.strip().split("[")[1].split(" ms ")[1])
+                value, join_large_time_unit = value_time_unit(x)
                 if isinstance(value, float):
                     join_large_result = value
             else:
@@ -70,16 +94,16 @@ def parse(rubric_file, test_output_file):
             
             if test_name == "join_tiny":
                 test_output['score'] = judge_point(join_tiny_result, join_tiny_baseline)
-                test_output['output'] = generate_output_note(join_tiny_result, join_tiny_baseline)
+                test_output['output'] = generate_output_note(join_tiny_result, join_tiny_time_unit, join_tiny_baseline, join_tiny_baseline_unit)
             elif test_name == "join_left":
                 test_output['score'] = judge_point(join_left_result, join_left_baseline)
-                test_output['output'] = generate_output_note(join_left_result, join_left_baseline)
+                test_output['output'] = generate_output_note(join_left_result, join_left_time_unit, join_left_baseline, join_left_baseline_unit)
             elif test_name == "join_right":
                 test_output['score'] = judge_point(join_right_result, join_right_baseline)
-                test_output['output'] = generate_output_note(join_right_result, join_right_baseline)
+                test_output['output'] = generate_output_note(join_right_result, join_right_time_unit, join_right_baseline, join_right_baseline_unit)
             elif test_name == "join_large":
                 test_output['score'] = judge_point(join_large_result, join_large_baseline)
-                test_output['output'] = generate_output_note(join_large_result, join_large_baseline)
+                test_output['output'] = generate_output_note(join_large_result, join_large_time_unit, join_large_baseline, join_large_baseline_unit)
 
             overall_test.append(test_output)
     
